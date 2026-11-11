@@ -2,105 +2,100 @@ package test;
 
 import java.util.List;
 
+import bank.member.MJMemberService;
 import bank.member.Member;
 import bank.member.MemberDao;
 import bank.member.MemberListDao;
+import bank.member.MemberMapDao;
 import bank.member.MemberOracleDao;
 import bank.member.MemberService;
-import bank.member.MJMemberService;
+
 
 public class TestMember {
 	public static void main(String[] args) {
-//		testMemberDao();
-		testMemberService();
+//		testMemberDao(new MemberMapDao());
+		testMemberService(new MJMemberService(new MemberMapDao()));
 //		testMemberOracleDao();
 	}
 	
-	public static void testMemberService() {
-//		MemberService ms = new MJMemberService(new MemberListDao());
-		MemberService ms = new MJMemberService(new MemberOracleDao());
+	public static void testMemberService(MemberService ms){
 		
-		System.out.println(">> 회원가입 및 목록조회");
-		ms.join("mj", "1111", "민재");
-		ms.join("mj", "1111", "민재");
-		ms.join("mj2", "1111", "만재");
-		
+		System.out.println(">>> 회원가입 및 목록조회");
+		ms.join("curi", "1234", "큐리");
+		ms.join("curi2", "11111234", "큐리2");
 		printMemberList(ms.getAllMembers());
 		
-		System.out.println(">> 로그인, 로그아웃");
-		if(ms.login("mj", "1111"))
+		System.out.println(">>> 로그인, 로그아웃");
+		if (ms.login("curi", "1234"))
 			System.out.println(ms.getLoggedMember());
 		ms.logout();
 		System.out.println(ms.getLoggedMember());
 		
-		System.out.println(">> 회원정보 보기");
-		ms.login("mj", "1111");
-		System.out.println(ms.getMemberInfo("mj2"));
-		System.out.println(ms.getMemberInfo("yujin"));
+		System.out.println(">>> 회원 정보 보기");
+		ms.login("admin", "1234");
+		System.out.println(ms.getMemberInfo("curi"));
 		
-		System.out.println(">> 비밀번호 변경");
-		ms.changePassword("mj", "1111", "3333");
+		System.out.println(">>> 비밀번호 변경");
+		ms.changePassword("curi", "1234", "cccc");
 		printMemberList(ms.getAllMembers());
-		
-	}
+		}
 	
-	public static void testMemberDao() {
+	
+	public static void testMemberDao(MemberDao dao) {
 		MemberDao mdao = new MemberListDao();
-		// 회원 추가
-		
-		System.out.println(">>> 회원 추가");
+
+		System.out.println(">>> 회원 추가 및 회원 목록");
 		mdao.save(new Member("admin", "1234", "admin", null, null, Member.ADMIN));
-		mdao.save(new Member("kkk", "1111", "만재임", null, null, Member.USER));
-		mdao.save(new Member("changsup", "1111", "섭섭", null, null, Member.USER));
-		// 회원 모두 조회
+		mdao.save(new Member("mj", "1111", "김민재", null, null, Member.USER));
+		mdao.save(new Member("curi", "1111", "큐리", null, null, Member.USER));
+		printMemberList(mdao.findAll());
+		
 		System.out.println(">>> 회원 목록");
 		List<Member> mlist = mdao.findAll();
-		// 회원 출력
 		printMemberList(mlist);
-		// id로 회원 조회
-		System.out.println(">>> id로 회원 조회");
-		Member m = mdao.findById("changsup");
+		
+		System.out.println(">>> id로 회원 찾기");
+		Member m = mdao.findById("curi");
 		System.out.println(m);
 		
 		System.out.println(">>> 비밀번호 변경");
 		m.setPassword("1234");
 		mdao.update(m);
 		printMemberList(mdao.findAll());
-
+		
 		System.out.println(">>> 회원 삭제");
-		mdao.delete(mdao.findById("changsup"));
+		mdao.delete(mdao.findById("curi"));
 		printMemberList(mdao.findAll());
 	}
 	
 	public static void testMemberOracleDao() {
 		MemberDao mdao = new MemberOracleDao();
 		
-		System.out.println("> 회원추가");
+		System.out.println(">>> 회원 추가");
 		mdao.save(new Member("aaa", "1111", "회원A", null, null, Member.USER));
 		mdao.save(new Member("bbb", "1111", "회원B", null, null, Member.USER));
 		mdao.save(new Member("ccc", "1111", "회원C", null, null, Member.USER));
 		
-		System.out.println("> 회원목록");
+		System.out.println(">>> 회원 목록");
 		List<Member> members = mdao.findAll();
 		printMemberList(members);
 		
-		System.out.println("> id로 회원 조회");
+		System.out.println(">>> id로 회원 찾기");
 		Member member = mdao.findById("aaa");
 		System.out.println(member);
 		
-		System.out.println("> 비밀번호 변경");
+		System.out.println(">>> 비밀번호 변경");
 		member.setPassword("1234");
 		mdao.update(member);
 		printMemberList(mdao.findAll());
 		
-		System.out.println("> 회원 삭제");
+		System.out.println(">>> 회원 삭제");
 		mdao.delete(mdao.findById("bbb"));
 		printMemberList(mdao.findAll());
-		
 	}
 	
 	public static void printMemberList(List<Member> mlist) {
-		for(Member m : mlist) {
+		for (Member m : mlist) {
 			System.out.println(m);
 		}
 	}

@@ -2,9 +2,11 @@ package test;
 
 import java.util.*;
 
+
 import bank.account.Account;
 import bank.account.AccountDao;
 import bank.account.AccountListDao;
+import bank.account.AccountMapDao;
 
 public class TestAccount {
 	public static void main(String[] args) {
@@ -12,7 +14,7 @@ public class TestAccount {
 	}
 	
 	public static void testAccountDao() {
-		AccountDao adao = new AccountListDao();
+		AccountDao adao = new AccountMapDao();
 		// 계좌 추가
 		adao.save(new Account(1, "1111", "aaa", 0));
 		adao.save(new Account(2, "1111", "supsup", 0));
